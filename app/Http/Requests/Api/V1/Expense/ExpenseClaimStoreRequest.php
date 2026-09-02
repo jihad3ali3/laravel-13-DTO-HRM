@@ -11,6 +11,7 @@ class ExpenseClaimStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'employee_id' => 'nullable|exists:employees,id',
             'title' => 'required|string|max:255',
             'category' => 'required|string|in:travel,meals,internet,equipment,training,other',
             'amount' => 'required|numeric|min:0.01',
@@ -27,13 +28,19 @@ class ExpenseClaimStoreRequest extends FormRequest
 
     public function toDto(): ExpenseClaimStoreDto
     {
-        $employeeId = $this->input('employee_id');
+        $employeeId = null;
+        if ($this->filled('employee_id') && ($this->user()?->can('expenses.manage') || $this->user()?->hasRole('admin') || $this->user()?->hasRole('hr_manager'))) {
+            $employeeId = (int) $this->input('employee_id');
+        } elseif ($this->user()) {
+            $employeeId = Employee::where('user_id', $this->user()->id)->value('id') ?? $this->user()->employee?->id;
+        }
+
+        if (! $employeeId && $this->filled('employee_id')) {
+            $employeeId = (int) $this->input('employee_id');
+        }
+
         if (! $employeeId) {
-            if ($this->user() && $this->user()->employee) {
-                $employeeId = $this->user()->employee->id;
-            } else {
-                $employeeId = Employee::value('id');
-            }
+            $employeeId = (int) Employee::value('id');
         }
 
         $filePath = null;
@@ -42,7 +49,7 @@ class ExpenseClaimStoreRequest extends FormRequest
         }
 
         return new ExpenseClaimStoreDto(
-            employeeId: $employeeId,
+            employeeId: (int) $employeeId,
             title: $this->input('title'),
             category: $this->input('category'),
             amount: (float) $this->input('amount'),

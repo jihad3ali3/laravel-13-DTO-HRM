@@ -3,16 +3,21 @@
 @section('title', 'Leave Requests')
 
 @section('container')
-    <div class="d-flex justify-content-between align-items-center mb-6">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-6">
         <div>
             <h4 class="mb-1">Leave Applications &amp; Approvals</h4>
             <p class="mb-0 text-muted">Review leave requests, approve/reject applications, and monitor employee balances</p>
         </div>
-        @can('leaves.create')
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#applyLeaveModal">
-                <i class="icon-base ti tabler-calendar-plus me-1"></i> Apply for Leave
-            </button>
-        @endcan
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin::export.leaves.csv', request()->query()) }}" class="btn btn-label-success">
+                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Export Leaves
+            </a>
+            @if(auth()->user()->can('leaves.create') || auth()->user()->employee)
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#applyLeaveModal">
+                    <i class="icon-base ti tabler-calendar-plus me-1"></i> Apply for Leave
+                </button>
+            @endif
+        </div>
     </div>
 
     <!-- Quick Stats -->
@@ -225,15 +230,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label required">Employee</label>
-                        <select name="employee_id" class="form-select" required>
-                            <option value="">Select Employee</option>
-                            @foreach($employees as $emp)
-                                <option value="{{ $emp->id }}">{{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @if(auth()->user()->can('leaves.manage') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('hr_manager'))
+                        <div class="mb-3">
+                            <label class="form-label required">Employee</label>
+                            <select name="employee_id" class="form-select" required>
+                                <option value="">Select Employee</option>
+                                @foreach($employees as $emp)
+                                    <option value="{{ $emp->id }}" {{ (auth()->user()->employee?->id === $emp->id) ? 'selected' : '' }}>
+                                        {{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @else
+                        <input type="hidden" name="employee_id" value="{{ auth()->user()->employee->id ?? '' }}">
+                        <div class="alert alert-primary py-2 px-3 mb-3">
+                            <small><i class="icon-base ti tabler-user me-1"></i> Submitting application for: <strong>{{ auth()->user()->name }}</strong></small>
+                        </div>
+                    @endif
                     <div class="mb-3">
                         <label class="form-label required">Leave Type</label>
                         <select name="leave_id" class="form-select" required>

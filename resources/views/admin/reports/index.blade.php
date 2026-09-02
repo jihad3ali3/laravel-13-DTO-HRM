@@ -68,4 +68,111 @@
             </div>
         </div>
     </div>
+
+    <!-- Corporate Data Export Center -->
+    <div class="card">
+        <div class="card-header border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="card-title mb-1"><i class="icon-base ti tabler-download me-2 text-primary"></i>Corporate Data Export Center</h5>
+                    <small class="text-muted">Instant Excel-compatible CSV downloads and printable audit master sheets</small>
+                </div>
+                <span class="badge bg-label-primary">Excel &bull; CSV &bull; PDF</span>
+            </div>
+        </div>
+        <div class="card-body pt-4">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="icon-base ti tabler-users icon-20px text-primary me-2"></i>
+                                <h6 class="mb-0 fw-bold">Employee Directory</h6>
+                            </div>
+                            <p class="text-muted small mb-3">All personnel records, departments, designations, contacts, and statuses.</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('admin::export.employees.csv') }}" class="btn btn-sm btn-label-success flex-grow-1">
+                                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> CSV
+                            </a>
+                            <a href="{{ route('admin::export.employees.print') }}" target="_blank" class="btn btn-sm btn-label-secondary">
+                                <i class="icon-base ti tabler-printer me-1"></i> Print Roll
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="icon-base ti tabler-clock icon-20px text-success me-2"></i>
+                                <h6 class="mb-0 fw-bold">Attendance Timesheets</h6>
+                            </div>
+                            <p class="text-muted small mb-3">Complete time tracking log, check-in/out timestamps, and working hours.</p>
+                        </div>
+                        <div>
+                            <a href="{{ route('admin::export.attendance.csv') }}" class="btn btn-sm btn-label-success w-100">
+                                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Download Timesheet CSV
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="icon-base ti tabler-file-dollar icon-20px text-info me-2"></i>
+                                <h6 class="mb-0 fw-bold">Payroll Disbursements</h6>
+                            </div>
+                            <p class="text-muted small mb-3">Detailed monthly salary registers, gross wages, allowances, and tax deductions.</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('admin::export.payroll.csv') }}" class="btn btn-sm btn-label-success flex-grow-1">
+                                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> CSV
+                            </a>
+                            <a href="{{ route('admin::export.payroll.print') }}" target="_blank" class="btn btn-sm btn-label-secondary">
+                                <i class="icon-base ti tabler-printer me-1"></i> Print Sheet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="icon-base ti tabler-calendar-due icon-20px text-warning me-2"></i>
+                                <h6 class="mb-0 fw-bold">Leave Requests &amp; Entitlements</h6>
+                            </div>
+                            <p class="text-muted small mb-3">All leave applications, approval history, reason descriptions, and day counts.</p>
+                        </div>
+                        <div>
+                            <a href="{{ route('admin::export.leaves.csv') }}" class="btn btn-sm btn-label-success w-100">
+                                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Download Leaves CSV
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="icon-base ti tabler-receipt icon-20px text-danger me-2"></i>
+                                <h6 class="mb-0 fw-bold">Expense Reimbursements</h6>
+                            </div>
+                            <p class="text-muted small mb-3">Reimbursement claim codes, categories, claims amounts, and tax invoices.</p>
+                        </div>
+                        <div>
+                            <a href="{{ route('admin::export.expenses.csv') }}" class="btn btn-sm btn-label-success w-100">
+                                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Download Claims CSV
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

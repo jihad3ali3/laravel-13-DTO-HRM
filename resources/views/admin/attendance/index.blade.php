@@ -3,21 +3,24 @@
 @section('title', 'Attendance Management')
 
 @section('container')
-    <div class="d-flex justify-content-between align-items-center mb-6">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-6">
         <div>
             <h4 class="mb-1">Attendance Management</h4>
             <p class="mb-0 text-muted">Track daily rosters, time-logs, late check-ins, and working hours</p>
         </div>
-        @can('attendance.manage')
-            <div class="d-flex gap-2">
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin::export.attendance.csv', request()->query()) }}" class="btn btn-label-success">
+                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Export Timesheet
+            </a>
+            @can('attendance.manage')
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkInModal">
                     <i class="icon-base ti tabler-login me-1"></i> Quick Check In
                 </button>
                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#checkOutModal">
                     <i class="icon-base ti tabler-logout me-1"></i> Quick Check Out
                 </button>
-            </div>
-        @endcan
+            @endcan
+        </div>
     </div>
 
     <!-- Quick Stats Cards -->

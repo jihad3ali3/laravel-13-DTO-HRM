@@ -17,7 +17,12 @@ class AnnouncementController extends Controller
 
     public function index(AnnouncementFilterRequest $request): View
     {
-        $announcements = $this->announcementService->getAnnouncements($request->toDto());
+        $announcements = Announcement::with(['department:id,name', 'creator:id,name'])
+            ->when($request->filled('department_id'), fn ($q) => $q->where('department_id', $request->department_id))
+            ->latest('is_pinned')
+            ->latest('start_date')
+            ->paginate(12);
+
         $departments = Department::where('is_active', true)->get();
 
         $pinnedCount = Announcement::where('is_pinned', true)->count();

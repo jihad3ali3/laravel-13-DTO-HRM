@@ -20,7 +20,7 @@ class HolidayController extends Controller
         $selectedYear = (int) $request->input('year', Carbon::now()->year);
         $holidays = Holiday::where('holiday_year', $selectedYear)
             ->orderBy('holiday_date', 'asc')
-            ->get();
+            ->paginate(20);
 
         return view('admin.holidays.index', compact('holidays', 'selectedYear'));
     }

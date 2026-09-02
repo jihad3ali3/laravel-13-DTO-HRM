@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Document;
 
-use App\Domain\Document\EmployeeDocumentStoreDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Document\EmployeeDocumentStoreRequest;
 use App\Http\Services\DocumentService;
@@ -40,20 +39,7 @@ class DocumentController extends Controller
 
     public function store(EmployeeDocumentStoreRequest $request): RedirectResponse
     {
-        $filePath = 'documents/sample.pdf';
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('documents', 'public');
-        }
-
-        $dto = new EmployeeDocumentStoreDto(
-            employeeId: (int) $request->employee_id,
-            documentType: $request->document_type,
-            documentNumber: $request->document_number,
-            filePath: $filePath,
-            expiryDate: $request->expiry_date
-        );
-
-        $this->documentService->store($dto);
+        $this->documentService->store($request->toDto());
 
         return redirect()->back()->with('success', 'Employee document uploaded successfully.');
     }

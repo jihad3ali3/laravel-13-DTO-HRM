@@ -3,21 +3,27 @@
 @section('title', 'Payroll Batches')
 
 @section('container')
-    <div class="d-flex justify-content-between align-items-center mb-6">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-6">
         <div>
             <h4 class="mb-1">Monthly Payroll Processing</h4>
             <p class="mb-0 text-muted">Generate batch payrolls, calculate salary structures, and manage payouts</p>
         </div>
-        @can('payroll.generate')
-            <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ route('admin::export.payroll.csv', request()->query()) }}" class="btn btn-label-success">
+                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Export CSV
+            </a>
+            <a href="{{ route('admin::export.payroll.print', request()->query()) }}" target="_blank" class="btn btn-label-secondary">
+                <i class="icon-base ti tabler-printer me-1"></i> Print Statement
+            </a>
+            @can('payroll.generate')
                 <a href="{{ route('admin::payroll.structures') }}" class="btn btn-label-secondary">
                     <i class="icon-base ti tabler-adjustments me-1"></i> Salary Structures
                 </a>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generatePayrollModal">
-                    <i class="icon-base ti tabler-calculator me-1"></i> Generate Payroll Batch
+                    <i class="icon-base ti tabler-calculator me-1"></i> Generate Payroll
                 </button>
-            </div>
-        @endcan
+            @endcan
+        </div>
     </div>
 
     <!-- Quick Stats -->

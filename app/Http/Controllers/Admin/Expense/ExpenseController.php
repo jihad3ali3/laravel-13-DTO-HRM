@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Expense;
 
-use App\Domain\Expense\ExpenseClaimStoreDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Expense\ExpenseClaimFilterRequest;
 use App\Http\Requests\Api\V1\Expense\ExpenseClaimProcessRequest;
@@ -39,22 +38,7 @@ class ExpenseController extends Controller
 
     public function store(ExpenseClaimStoreRequest $request): RedirectResponse
     {
-        $receiptPath = null;
-        if ($request->hasFile('receipt')) {
-            $receiptPath = $request->file('receipt')->store('receipts', 'public');
-        }
-
-        $dto = new ExpenseClaimStoreDto(
-            employeeId: (int) $request->employee_id,
-            title: $request->title,
-            category: $request->category,
-            amount: (float) $request->amount,
-            expenseDate: $request->expense_date,
-            description: $request->description,
-            receiptFile: $receiptPath
-        );
-
-        $this->expenseService->store($dto);
+        $this->expenseService->store($request->toDto());
 
         return redirect()->back()->with('success', 'Expense claim submitted successfully.');
     }

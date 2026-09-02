@@ -77,6 +77,12 @@
         @endforelse
     </div>
 
+    @if($holidays->hasPages())
+        <div class="d-flex justify-content-end mb-6">
+            {{ $holidays->appends(request()->query())->links() }}
+        </div>
+    @endif
+
     <!-- Create Holiday Modal -->
     <div class="modal fade" id="createHolidayModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

@@ -3,16 +3,24 @@
 @section('title', 'Employee Directory')
 
 @section('container')
-    <div class="d-flex justify-content-between align-items-center mb-6">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-6">
         <div>
             <h4 class="mb-1">Employee Directory</h4>
             <p class="mb-0 text-muted">Manage all employee records, profiles, and employment details</p>
         </div>
-        @can('employees.create')
-            <a href="{{ route('admin::employees.create') }}" class="btn btn-primary">
-                <i class="icon-base ti tabler-user-plus me-1"></i> Add New Employee
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin::export.employees.csv', request()->query()) }}" class="btn btn-label-success">
+                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Export CSV
             </a>
-        @endcan
+            <a href="{{ route('admin::export.employees.print') }}" target="_blank" class="btn btn-label-secondary">
+                <i class="icon-base ti tabler-printer me-1"></i> Master Roll
+            </a>
+            @can('employees.create')
+                <a href="{{ route('admin::employees.create') }}" class="btn btn-primary">
+                    <i class="icon-base ti tabler-user-plus me-1"></i> Add New Employee
+                </a>
+            @endcan
+        </div>
     </div>
 
     <!-- Filters Card -->

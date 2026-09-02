@@ -3,16 +3,21 @@
 @section('title', 'Expense Claims')
 
 @section('container')
-    <div class="d-flex justify-content-between align-items-center mb-6">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-6">
         <div>
             <h4 class="mb-1">Expense Claims &amp; Reimbursements</h4>
             <p class="mb-0 text-muted">Review employee business claims, verify receipts, and manage disbursements</p>
         </div>
-        @can('expenses.create')
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createClaimModal">
-                <i class="icon-base ti tabler-plus me-1"></i> Submit Claim
-            </button>
-        @endcan
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin::export.expenses.csv', request()->query()) }}" class="btn btn-label-success">
+                <i class="icon-base ti tabler-file-spreadsheet me-1"></i> Export Claims
+            </a>
+            @if(auth()->user()->can('expenses.create') || auth()->user()->employee)
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createClaimModal">
+                    <i class="icon-base ti tabler-plus me-1"></i> Submit Claim
+                </button>
+            @endif
+        </div>
     </div>
 
     <!-- Quick Stats -->
@@ -222,15 +227,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label required">Employee</label>
-                        <select name="employee_id" class="form-select" required>
-                            <option value="">Select Employee</option>
-                            @foreach($employees as $emp)
-                                <option value="{{ $emp->id }}">{{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @if(auth()->user()->can('expenses.manage') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('hr_manager'))
+                        <div class="mb-3">
+                            <label class="form-label required">Employee</label>
+                            <select name="employee_id" class="form-select" required>
+                                <option value="">Select Employee</option>
+                                @foreach($employees as $emp)
+                                    <option value="{{ $emp->id }}" {{ (auth()->user()->employee?->id === $emp->id) ? 'selected' : '' }}>
+                                        {{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @else
+                        <input type="hidden" name="employee_id" value="{{ auth()->user()->employee->id ?? '' }}">
+                        <div class="alert alert-primary py-2 px-3 mb-3">
+                            <small><i class="icon-base ti tabler-user me-1"></i> Submitting claim for: <strong>{{ auth()->user()->name }}</strong></small>
+                        </div>
+                    @endif
                     <div class="mb-3">
                         <label class="form-label required">Claim Title</label>
                         <input type="text" name="title" class="form-control" placeholder="e.g. Client Dinner / Train Tickets" required>

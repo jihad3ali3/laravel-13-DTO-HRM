@@ -8,11 +8,11 @@
             <h4 class="mb-1">Employee Documents Repository</h4>
             <p class="mb-0 text-muted">Manage employee identity records, certifications, contracts, and verification status</p>
         </div>
-        @can('documents.create')
+        @if(auth()->user()->can('documents.create') || auth()->user()->employee)
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadDocModal">
                 <i class="icon-base ti tabler-upload me-1"></i> Upload Document
             </button>
-        @endcan
+        @endif
     </div>
 
     <!-- Filter Bar -->
@@ -170,16 +170,28 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    @if(auth()->user()->can('documents.manage') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('hr_manager'))
+                        <div class="mb-3">
+                            <label class="form-label required">Employee</label>
+                            <select name="employee_id" class="form-select" required>
+                                <option value="">Select Employee</option>
+                                @foreach($employees as $emp)
+                                    <option value="{{ $emp->id }}" {{ (auth()->user()->employee?->id === $emp->id) ? 'selected' : '' }}>
+                                        {{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @else
+                        <input type="hidden" name="employee_id" value="{{ auth()->user()->employee->id ?? '' }}">
+                        <div class="alert alert-primary py-2 px-3 mb-3">
+                            <small><i class="icon-base ti tabler-user me-1"></i> Uploading document for: <strong>{{ auth()->user()->name }}</strong></small>
+                        </div>
+                    @endif
                     <div class="mb-3">
-                        <label class="form-label required">Employee</label>
-                        <select name="employee_id" class="form-select" required>
-                            <option value="">Select Employee</option>
-                            @foreach($employees as $emp)
-                                <option value="{{ $emp->id }}">{{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})</option>
-                            @endforeach
-                        </select>
+                        <label class="form-label required">Document Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Passport Copy / Degree Certificate" required>
                     </div>
-                    <div class="mb-3">
                         <label class="form-label required">Document Type</label>
                         <select name="document_type" class="form-select" required>
                             <option value="id_proof">ID Proof (Aadhar/Passport/PAN)</option>

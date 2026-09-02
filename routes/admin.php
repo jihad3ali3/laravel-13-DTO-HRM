@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Document\DocumentController;
 use App\Http\Controllers\Admin\Employee\EmployeeController;
 use App\Http\Controllers\Admin\Expense\ExpenseController;
+use App\Http\Controllers\Admin\Export\ExportController;
 use App\Http\Controllers\Admin\Holiday\HolidayController;
 use App\Http\Controllers\Admin\Leave\LeaveController;
 use App\Http\Controllers\Admin\Notification\NotificationController;
@@ -176,6 +177,17 @@ Route::prefix('admin')->name('admin::')->group(function () {
 
             Route::get('company', [SettingController::class, 'company'])->name('company');
             Route::put('company', [SettingController::class, 'updateCompany'])->name('company.update');
+        });
+
+        // 9. Export & Report Generators
+        Route::prefix('export')->name('export.')->group(function () {
+            Route::get('employees/csv', [ExportController::class, 'employeesCsv'])->name('employees.csv');
+            Route::get('employees/print', [ExportController::class, 'employeesPrint'])->name('employees.print');
+            Route::get('attendance/csv', [ExportController::class, 'attendanceCsv'])->name('attendance.csv');
+            Route::get('payroll/csv', [ExportController::class, 'payrollCsv'])->name('payroll.csv');
+            Route::get('payroll/print', [ExportController::class, 'payrollPrint'])->name('payroll.print');
+            Route::get('leaves/csv', [ExportController::class, 'leavesCsv'])->name('leaves.csv');
+            Route::get('expenses/csv', [ExportController::class, 'expensesCsv'])->name('expenses.csv');
         });
     });
 });

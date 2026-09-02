@@ -184,3 +184,43 @@ test('admin can update company settings via web form', function () {
     $settingsResponse->assertRedirect();
     $settingsResponse->assertSessionHas('success');
 });
+
+test('regular employee can submit self leave and self expense claim without admin manage rights', function () {
+    $empUser = User::where('email', 'employee@example.com')->first();
+    $leave = Leave::first();
+
+    // 1. Submit self leave
+    $leaveResponse = $this->actingAs($empUser)->post(route('admin::leaves.store'), [
+        'leave_id' => $leave->id,
+        'start_date' => '2026-09-10',
+        'end_date' => '2026-09-12',
+        'reason' => 'Personal urgent work',
+    ]);
+
+    $leaveResponse->assertRedirect();
+    $leaveResponse->assertSessionHas('success');
+
+    $this->assertDatabaseHas('leave_requests', [
+        'employee_id' => $empUser->employee->id,
+        'leave_id' => $leave->id,
+        'status' => 'pending',
+    ]);
+
+    // 2. Submit self expense claim
+    $expenseResponse = $this->actingAs($empUser)->post(route('admin::expenses.store'), [
+        'title' => 'Client Meet Uber Cab',
+        'category' => 'travel',
+        'amount' => 640.00,
+        'expense_date' => '2026-09-02',
+        'description' => 'Airport to Office Cab',
+    ]);
+
+    $expenseResponse->assertRedirect();
+    $expenseResponse->assertSessionHas('success');
+
+    $this->assertDatabaseHas('expenses_claims', [
+        'employee_id' => $empUser->employee->id,
+        'title' => 'Client Meet Uber Cab',
+        'amount' => 640.00,
+    ]);
+});
