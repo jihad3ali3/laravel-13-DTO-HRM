@@ -17,6 +17,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $result = $this->authService->login($request->toDto());
+
         return ApiResponse::success($result, 'Login success');
     }
 

@@ -7,6 +7,15 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CompanySettingUpdateRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('settings')) {
+            $this->merge([
+                'settings' => $this->except(['_token', '_method']),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [

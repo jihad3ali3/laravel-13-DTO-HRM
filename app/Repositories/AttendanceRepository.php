@@ -72,7 +72,7 @@ class AttendanceRepository
         $shiftStartTime = Carbon::parse($employeeShift->shift->start_time)->setDate(Carbon::now()->year, Carbon::now()->month, Carbon::now()->day);
         $shiftEndTime = Carbon::parse($employeeShift->shift->end_time)->setDate(Carbon::now()->year, Carbon::now()->month, Carbon::now()->day);
 
-        if (Carbon::now()->lte($shiftEndTime)) {
+        if (Carbon::now()->gt($shiftEndTime)) {
             throw new RepositoryException('Your shift already ended at '.$shiftEndTime, ResponseAlias::HTTP_NOT_FOUND);
         }
 
@@ -100,10 +100,10 @@ class AttendanceRepository
 
     public function checkOut(AttendanceCheckoutDto $attendanceCheckOutDto): Attendance
     {
-        return DB::transaction(function () {
-            $attendance = Attendance::where('attendance_date', Carbon::now()->toDateString())
+        return DB::transaction(function () use ($attendanceCheckOutDto) {
+            $attendance = Attendance::where('employee_id', $attendanceCheckOutDto->employeeId)
+                ->whereDate('attendance_date', Carbon::now()->toDateString())
                 ->whereNull('check_out')
-                ->where('working_hours', 0)
                 ->lockForUpdate()
                 ->first();
             if (! $attendance) {

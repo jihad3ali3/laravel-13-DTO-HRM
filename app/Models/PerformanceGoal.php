@@ -28,4 +28,9 @@ class PerformanceGoal extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function getEndDateAttribute(): ?string
+    {
+        return $this->due_date ? $this->due_date->toDateString() : null;
+    }
 }

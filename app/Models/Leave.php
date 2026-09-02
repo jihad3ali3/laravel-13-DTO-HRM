@@ -25,4 +25,9 @@ class Leave extends Model
     {
         return $this->hasMany(LeaveRequest::class);
     }
+
+    public function getDaysAllowedAttribute(): int
+    {
+        return (int) ($this->attributes['max_day_per_year'] ?? 12);
+    }
 }

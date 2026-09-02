@@ -17,7 +17,7 @@ readonly class LoginDTO
         return new self(
             email: $data['email'],
             password: $data['password'],
-            remember: (bool)$data['remember_me'] ?? false
+            remember: (bool) ($data['remember_me'] ?? $data['remember'] ?? false)
         );
     }
 }

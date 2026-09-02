@@ -85,4 +85,9 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeShift::class);
     }
+
+    public function getStatusAttribute(): string
+    {
+        return $this->is_active ? 'active' : 'inactive';
+    }
 }

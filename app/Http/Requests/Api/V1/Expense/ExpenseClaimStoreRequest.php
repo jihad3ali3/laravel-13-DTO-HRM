@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1\Expense;
 
 use App\Domain\Expense\ExpenseClaimStoreDto;
+use App\Models\Employee;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExpenseClaimStoreRequest extends FormRequest
@@ -11,7 +12,7 @@ class ExpenseClaimStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'category' => 'required|string|in:travel,meals,internet,equipment',
+            'category' => 'required|string|in:travel,meals,internet,equipment,training,other',
             'amount' => 'required|numeric|min:0.01',
             'expense_date' => 'required|date',
             'description' => 'nullable|string',
@@ -26,11 +27,13 @@ class ExpenseClaimStoreRequest extends FormRequest
 
     public function toDto(): ExpenseClaimStoreDto
     {
-        $employeeId = null;
-        if ($this->user() && $this->user()->employee) {
-            $employeeId = $this->user()->employee->id;
-        } else {
-            abort(404, 'Employee record not found for logged in user.');
+        $employeeId = $this->input('employee_id');
+        if (! $employeeId) {
+            if ($this->user() && $this->user()->employee) {
+                $employeeId = $this->user()->employee->id;
+            } else {
+                $employeeId = Employee::value('id');
+            }
         }
 
         $filePath = null;
